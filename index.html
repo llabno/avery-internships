@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chicago Audio Internships</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+    background: #f5f5f7;
+    color: #1d1d1f;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    padding: 80px 40px 60px;
+    text-align: center;
+    background: #fff;
+  }
+  .hero .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; color: #6e6e73; margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-size: 52px; font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.08; color: #1d1d1f;
+  }
+  .hero h1 span {
+    background: linear-gradient(90deg, #2997ff, #af52de);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero .sub {
+    font-size: 19px; font-weight: 400; color: #6e6e73;
+    margin-top: 16px; line-height: 1.5;
+  }
+
+  .stats-row {
+    display: flex; justify-content: center; gap: 48px;
+    margin-top: 40px; flex-wrap: wrap;
+  }
+  .stat-item { text-align: center; }
+  .stat-item .num {
+    font-size: 40px; font-weight: 700; letter-spacing: -0.02em; color: #1d1d1f;
+  }
+  .stat-item .label {
+    font-size: 12px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.8px; color: #86868b; margin-top: 4px;
+  }
+
+  .deadline-strip {
+    background: #1d1d1f; color: #f5f5f7; padding: 14px 40px;
+    display: flex; align-items: center; gap: 32px;
+    overflow-x: auto; font-size: 13px; font-weight: 500;
+  }
+  .deadline-strip .tag {
+    color: #bf5af2; text-transform: uppercase; letter-spacing: 1px;
+    font-size: 11px; font-weight: 700; white-space: nowrap; flex-shrink: 0;
+  }
+  .deadline-strip .item { white-space: nowrap; color: #a1a1a6; }
+  .deadline-strip .item strong { color: #f5f5f7; font-weight: 600; }
+
+  .controls {
+    max-width: 1120px; margin: 0 auto; padding: 40px 24px 0;
+  }
+  .search-wrap {
+    position: relative; max-width: 480px; margin: 0 auto 28px;
+  }
+  .search-wrap svg {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    color: #86868b; width: 16px; height: 16px;
+  }
+  .search-wrap input {
+    width: 100%; padding: 12px 16px 12px 44px; font-size: 15px;
+    font-family: inherit; border: none; border-radius: 12px;
+    background: #e8e8ed; color: #1d1d1f; outline: none; transition: background 0.2s;
+  }
+  .search-wrap input::placeholder { color: #86868b; }
+  .search-wrap input:focus { background: #dddde1; }
+
+  .pills {
+    display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .pill {
+    padding: 7px 16px; border-radius: 980px; border: none; background: transparent;
+    color: #6e6e73; font-size: 13px; font-weight: 500; font-family: inherit;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .pill:hover { color: #1d1d1f; background: #e8e8ed; }
+  .pill.active { background: #1d1d1f; color: #fff; }
+
+  .toggles {
+    display: flex; justify-content: center; gap: 24px; padding: 16px 0 0;
+  }
+  .toggle-label {
+    font-size: 13px; color: #86868b; display: flex; align-items: center;
+    gap: 6px; cursor: pointer; user-select: none;
+  }
+  .toggle-label input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; width: 18px; height: 18px;
+    border-radius: 5px; border: 1.5px solid #c7c7cc; background: #fff;
+    cursor: pointer; position: relative; transition: all 0.15s;
+  }
+  .toggle-label input[type="checkbox"]:checked {
+    background: #1d1d1f; border-color: #1d1d1f;
+  }
+  .toggle-label input[type="checkbox"]:checked::after {
+    content: ''; position: absolute; left: 5px; top: 2px;
+    width: 5px; height: 9px; border: solid #fff;
+    border-width: 0 1.5px 1.5px 0; transform: rotate(45deg);
+  }
+
+  .source-pills {
+    display: flex; justify-content: center; gap: 8px; margin-top: 12px;
+  }
+  .source-pill {
+    padding: 5px 12px; border-radius: 980px; border: 1.5px solid #c7c7cc;
+    background: transparent; color: #6e6e73; font-size: 12px; font-weight: 500;
+    font-family: inherit; cursor: pointer; transition: all 0.2s;
+  }
+  .source-pill:hover { border-color: #86868b; }
+  .source-pill.active { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+
+  .grid {
+    max-width: 1120px; margin: 0 auto; padding: 32px 24px 80px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px;
+  }
+
+  .card {
+    background: #fff; border-radius: 18px; padding: 28px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  }
+  .card.closed { opacity: 0.45; }
+
+  .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.3px;
+    padding: 3px 10px; border-radius: 980px;
+  }
+  .badge-open { background: #d4f5e0; color: #1a7d42; }
+  .badge-closed { background: #fce4e8; color: #c9303d; }
+  .badge-check { background: #fef3cd; color: #946800; }
+  .badge-linkedin { background: #dbeafe; color: #0a66c2; }
+  .badge-curated { background: #f0e6ff; color: #7c3aed; }
+
+  .cat-tag {
+    font-size: 11px; font-weight: 500; color: #6e6e73;
+    background: #f5f5f7; padding: 3px 10px; border-radius: 980px;
+  }
+
+  .card h3 {
+    font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+    line-height: 1.3; color: #1d1d1f; margin-bottom: 4px;
+  }
+  .card .company {
+    font-size: 14px; font-weight: 500; color: #2997ff; margin-bottom: 4px;
+    text-decoration: none;
+  }
+  .card .company:hover { text-decoration: underline; }
+  .card .industry-tag {
+    font-size: 12px; color: #86868b; margin-bottom: 16px;
+  }
+
+  .meta-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;
+  }
+  .meta-item .label {
+    font-size: 11px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #86868b; margin-bottom: 2px;
+  }
+  .meta-item .value { font-size: 14px; font-weight: 500; color: #1d1d1f; }
+  .meta-item .value.green { color: #1a7d42; }
+  .meta-item .value.amber { color: #bf5af2; }
+
+  .desc-preview {
+    font-size: 13px; color: #6e6e73; line-height: 1.6;
+    margin-bottom: 16px; display: -webkit-box; -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical; overflow: hidden;
+  }
+
+  .reqs { margin-bottom: 20px; }
+  .reqs summary {
+    font-size: 12px; font-weight: 500; text-transform: uppercase;
+    letter-spacing: 0.5px; color: #86868b; cursor: pointer; outline: none;
+    list-style: none;
+  }
+  .reqs summary::before { content: '+ '; font-weight: 600; }
+  .reqs[open] summary::before { content: '- '; }
+  .reqs ul { margin: 8px 0 0 16px; }
+  .reqs li { font-size: 13px; color: #6e6e73; line-height: 1.7; }
+
+  .applicants {
+    font-size: 12px; color: #86868b; margin-bottom: 12px;
+  }
+
+  .card-actions { margin-top: auto; display: flex; gap: 10px; padding-top: 4px; }
+  .btn {
+    display: inline-flex; align-items: center; padding: 10px 20px;
+    border-radius: 980px; font-size: 13px; font-weight: 600;
+    font-family: inherit; text-decoration: none; transition: all 0.15s;
+    cursor: pointer; border: none;
+  }
+  .btn-primary { background: #2997ff; color: #fff; }
+  .btn-primary:hover { background: #0077d4; }
+  .btn-secondary { background: #e8e8ed; color: #1d1d1f; }
+  .btn-secondary:hover { background: #dddde1; }
+
+  .empty {
+    grid-column: 1 / -1; text-align: center; padding: 80px 24px;
+    color: #86868b; font-size: 17px; font-weight: 500;
+  }
+
+  .footer {
+    text-align: center; padding: 40px 24px 60px;
+    font-size: 12px; color: #86868b;
+  }
+  .footer a { color: #2997ff; text-decoration: none; }
+
+  @media (max-width: 640px) {
+    .hero { padding: 56px 24px 40px; }
+    .hero h1 { font-size: 32px; }
+    .hero .sub { font-size: 16px; }
+    .stats-row { gap: 28px; }
+    .stat-item .num { font-size: 28px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <p class="eyebrow">Avery's Internship Search</p>
+  <h1>Audio internships.<br><span>In Chicago.</span></h1>
+  <p class="sub" id="hero-sub">Loading internship data...</p>
+  <div class="stats-row">
+    <div class="stat-item"><div class="num" id="s-total">-</div><div class="label">Listings</div></div>
+    <div class="stat-item"><div class="num" id="s-open">-</div><div class="label">Still Open</div></div>
+    <div class="stat-item"><div class="num" id="s-paid">-</div><div class="label">Paid</div></div>
+    <div class="stat-item"><div class="num" id="s-cat">-</div><div class="label">Categories</div></div>
+  </div>
+</section>
+
+<div class="deadline-strip" id="deadlines">
+  <span class="tag">Upcoming Deadlines</span>
+</div>
+
+<section class="controls">
+  <div class="search-wrap">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Search roles, companies, industries, skills...">
+  </div>
+  <div class="pills" id="pills"></div>
+  <div class="source-pills" id="source-pills"></div>
+  <div class="toggles">
+    <label class="toggle-label"><input type="checkbox" id="hide-closed"> Hide closed</label>
+    <label class="toggle-label"><input type="checkbox" id="paid-only"> Paid only</label>
+  </div>
+</section>
+
+<div class="grid" id="grid"></div>
+
+<footer class="footer">
+  Data from Indeed, LinkedIn, ZipRecruiter, Glassdoor &amp; company sites.&ensp;
+  <a href="Chicago Audio Internships.json" target="_blank">JSON</a> &middot;
+  <a href="Chicago Audio Internships.csv" target="_blank">CSV</a> &middot;
+  <a href="internships_linkedin.json" target="_blank">LinkedIn Raw</a>
+</footer>
+
+<script>
+let L = [];
+let cats = [];
+let ac = 'All';
+let activeSource = 'All';
+
+async function loadData() {
+  try {
+    const res = await fetch('Chicago Audio Internships.json');
+    const data = await res.json();
+    L = data.listings;
+    cats = data.categories || [...new Set(L.map(l => l.category))];
+    init();
+  } catch (e) {
+    document.getElementById('grid').innerHTML =
+      '<div class="empty">Failed to load data. Make sure the server is running.</div>';
+    console.error(e);
+  }
+}
+
+function init() {
+  // Stats
+  document.getElementById('s-total').textContent = L.length;
+  document.getElementById('s-open').textContent = L.filter(l => l.open === true).length;
+  document.getElementById('s-paid').textContent = L.filter(l => l.paid === true).length;
+  document.getElementById('s-cat').textContent = cats.length;
+  document.getElementById('hero-sub').innerHTML =
+    `${L.length} opportunities across recording studios, broadcast, live sound,<br>post-production, and more. Updated March 24, 2026.`;
+
+  // Category pills
+  const p = document.getElementById('pills');
+  p.innerHTML = '';
+  addPill(p, 'All');
+  cats.forEach(c => addPill(p, c));
+
+  // Source pills
+  const sp = document.getElementById('source-pills');
+  sp.innerHTML = '';
+  const sources = ['All', 'curated', 'linkedin'];
+  sources.forEach(s => {
+    const b = document.createElement('button');
+    b.className = 'source-pill' + (s === 'All' ? ' active' : '');
+    b.textContent = s === 'All' ? 'All Sources' : s.charAt(0).toUpperCase() + s.slice(1);
+    b.onclick = () => { activeSource = s; render(); };
+    sp.appendChild(b);
+  });
+
+  // Deadlines
+  const dl = document.getElementById('deadlines');
+  L.filter(l => l.deadline && l.open && l.deadline !== 'Rolling' && l.deadline !== 'Passed')
+    .sort((a, b) => (a.deadline || '').localeCompare(b.deadline || ''))
+    .forEach(l => {
+      const s = document.createElement('span');
+      s.className = 'item';
+      s.innerHTML = `<strong>${l.deadline}</strong> ${l.company}`;
+      dl.appendChild(s);
+    });
+
+  // Events
+  document.getElementById('search').addEventListener('input', render);
+  document.getElementById('hide-closed').addEventListener('change', render);
+  document.getElementById('paid-only').addEventListener('change', render);
+
+  render();
+}
+
+function addPill(parent, text) {
+  const b = document.createElement('button');
+  b.className = 'pill' + (text === 'All' ? ' active' : '');
+  b.textContent = text;
+  b.onclick = () => { ac = text; render(); };
+  parent.appendChild(b);
+}
+
+function esc(s) {
+  if (!s) return '';
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function render() {
+  const q = document.getElementById('search').value.toLowerCase();
+  const hc = document.getElementById('hide-closed').checked;
+  const po = document.getElementById('paid-only').checked;
+
+  document.querySelectorAll('.pill').forEach(p =>
+    p.classList.toggle('active', p.textContent === ac)
+  );
+  document.querySelectorAll('.source-pill').forEach(p => {
+    const val = p.textContent === 'All Sources' ? 'All' : p.textContent.toLowerCase();
+    p.classList.toggle('active', val === activeSource);
+  });
+
+  const f = L.filter(l => {
+    if (ac !== 'All' && l.category !== ac) return false;
+    if (activeSource !== 'All' && l.source !== activeSource) return false;
+    if (hc && l.open === false) return false;
+    if (po && !l.paid) return false;
+    if (q) {
+      const reqs = Array.isArray(l.requirements) ? l.requirements.join(' ') : (l.requirements || '');
+      const b = [
+        l.title, l.company, l.category, l.location, l.rate, l.hours,
+        l.industries, l.job_function, l.description, reqs
+      ].join(' ').toLowerCase();
+      if (!b.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const g = document.getElementById('grid');
+  if (!f.length) {
+    g.innerHTML = '<div class="empty">No listings match your filters.</div>';
+    return;
+  }
+
+  g.innerHTML = f.map(l => {
+    const bc = l.open === true ? 'badge-open' : l.open === false ? 'badge-closed' : 'badge-check';
+    const bt = l.open === true ? 'Open' : l.open === false ? 'Closed' : 'Check';
+    const pay = l.rate || (l.paid === false ? 'Unpaid' : 'Not disclosed');
+    const pc = l.paid ? 'green' : '';
+    const dv = l.deadline || '-';
+    const dc = (l.deadline && l.open && l.deadline !== 'Rolling') ? 'amber' : '';
+    const srcBadge = l.source === 'linkedin' ? '<span class="badge badge-linkedin">LinkedIn</span>' :
+                     l.source === 'curated' ? '<span class="badge badge-curated">Curated</span>' : '';
+
+    const reqs = Array.isArray(l.requirements) ? l.requirements : [];
+    const reqsHtml = reqs.length
+      ? `<details class="reqs"><summary>Requirements</summary><ul>${reqs.map(r => `<li>${esc(r)}</li>`).join('')}</ul></details>`
+      : '';
+
+    const descHtml = l.description
+      ? `<div class="desc-preview">${esc(l.description)}</div>`
+      : '';
+
+    const applicantsHtml = l.applicant_count
+      ? `<div class="applicants">${esc(l.applicant_count)}</div>`
+      : '';
+
+    const industryHtml = l.industries
+      ? `<div class="industry-tag">${esc(l.industries)}</div>`
+      : '';
+
+    const companyLink = l.company_url
+      ? `<a href="${esc(l.company_url)}" target="_blank" rel="noopener" class="company">${esc(l.company)}</a>`
+      : `<div class="company">${esc(l.company)}</div>`;
+
+    const hrs = l.hours || l.employment_type || '';
+    const dur = l.duration || (l.posting_date ? `Posted ${l.posting_date}` : '');
+
+    return `<article class="card${l.open === false ? ' closed' : ''}">
+      <div class="card-top">
+        <span class="badge ${bc}">${bt}</span>
+        ${srcBadge}
+        <span class="cat-tag">${esc(l.category)}</span>
+      </div>
+      <h3>${esc(l.title)}</h3>
+      ${companyLink}
+      ${industryHtml}
+      <div class="meta-grid">
+        <div class="meta-item"><div class="label">Location</div><div class="value">${esc(l.location)}</div></div>
+        <div class="meta-item"><div class="label">Pay</div><div class="value ${pc}">${esc(pay)}</div></div>
+        <div class="meta-item"><div class="label">Hours</div><div class="value">${esc(hrs)}</div></div>
+        <div class="meta-item"><div class="label">Duration</div><div class="value">${esc(dur)}</div></div>
+        <div class="meta-item"><div class="label">Deadline</div><div class="value ${dc}">${esc(dv)}</div></div>
+        ${l.seniority_level ? `<div class="meta-item"><div class="label">Level</div><div class="value">${esc(l.seniority_level)}</div></div>` : ''}
+      </div>
+      ${descHtml}
+      ${reqsHtml}
+      ${applicantsHtml}
+      <div class="card-actions">
+        <a href="${esc(l.apply_url)}" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
+      </div>
+    </article>`;
+  }).join('');
+}
+
+loadData();
+</script>
+</body>
+</html>

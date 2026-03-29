@@ -139,6 +139,7 @@
     box-shadow: 0 4px 24px rgba(0,0,0,0.06);
   }
   .card.closed { opacity: 0.45; }
+  .card.muted { opacity: 0.4; filter: grayscale(80%); }
 
   .card-top { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
   .badge {
@@ -348,6 +349,17 @@ function addPill(parent, text) {
   parent.appendChild(b);
 }
 
+let mutedJobs = JSON.parse(localStorage.getItem('averyMutedJobs') || '[]');
+function toggleMute(title) {
+  if (mutedJobs.includes(title)) {
+    mutedJobs = mutedJobs.filter(t => t !== title);
+  } else {
+    mutedJobs.push(title);
+  }
+  localStorage.setItem('averyMutedJobs', JSON.stringify(mutedJobs));
+  render();
+}
+
 function esc(s) {
   if (!s) return '';
   const d = document.createElement('div');
@@ -382,6 +394,10 @@ function render() {
       if (!b.includes(q)) return false;
     }
     return true;
+  });
+
+  f.sort((a,b) => {
+    return (mutedJobs.includes(a.title) ? 1 : 0) - (mutedJobs.includes(b.title) ? 1 : 0);
   });
 
   const g = document.getElementById('grid');
@@ -423,8 +439,9 @@ function render() {
 
     const hrs = l.hours || l.employment_type || '';
     const dur = l.duration || (l.posting_date ? `Posted ${l.posting_date}` : '');
+    const isMuted = mutedJobs.includes(l.title);
 
-    return `<article class="card${l.open === false ? ' closed' : ''}">
+    return `<article class="card ${l.open === false ? 'closed' : ''} ${isMuted ? 'muted' : ''}">
       <div class="card-top">
         <span class="badge ${bc}">${bt}</span>
         ${srcBadge}
@@ -446,6 +463,7 @@ function render() {
       ${applicantsHtml}
       <div class="card-actions">
         <a href="${esc(l.apply_url)}" target="_blank" rel="noopener" class="btn btn-primary">Apply</a>
+        <button onclick="toggleMute('${esc(l.title).replace(/'/g, "\\'")}')" class="btn btn-secondary">${isMuted ? 'Undo Mute' : '🚫 Not Interested'}</button>
       </div>
     </article>`;
   }).join('');
